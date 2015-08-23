@@ -4,6 +4,7 @@
  * Simple Paypal IPN Handler class.
  *
  * Verifies the IPN is valid and then fires an action with the data for someone else to handle.
+ * @see https://developer.paypal.com/webapps/developer/docs/classic/products/instant-payment-notification/
  */
 class pjw_ipn_handler {
 	private $sandbox;
