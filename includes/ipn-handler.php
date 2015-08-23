@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Simple Paypal IPN Handler class.
+ *
+ * Verifies the IPN is valid and then fires an action with the data for someone else to handle.
+ */
 class pjw_ipn_handler {
 	private $sandbox;
 	private $debug;
@@ -25,7 +30,7 @@ class pjw_ipn_handler {
 
 	public function action_init() {
 		add_rewrite_rule( '^paypal/ipn-handler$', 'index.php?_pjw_ipn_handler=1', 'top' );
-		// TODO ... CAN WE AVOID THIS
+		// @TODO ... CAN WE AVOID THIS
 		flush_rewrite_rules();
 	}
 
@@ -46,11 +51,11 @@ class pjw_ipn_handler {
 			$_response = wp_remote_retrieve_body( $response );
 			switch( $_response ) {
 					case 'VERIFIED':
-						$this->debug_log( 'IPN VERIFIED' );
+						$this->debug_log( 'IPN VERIFIED for ' . $_POST['txn_type'] );
 						do_action( 'pjw_ipn_verified_for-' . $_POST['txn_type'], $_POST );
 						break;
 					case 'INVALID':
-						$this->debug_log( 'IPN INVALID' );
+						$this->debug_log( 'IPN INVALID for ' . $_POST['txn_type'] );
 						do_action( 'pjw_ipn_invalid_for-' . $_POST['txn_type'], $_POST );
 						break;
 			}
