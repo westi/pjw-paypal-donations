@@ -2,7 +2,10 @@
 /*
 Plugin Name: PJW Paypal Donation Manager
 Version: 0.1
- */
+License: GPL2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Author: Peter Westwood
+*/
 
 require_once( __DIR__ . '/includes/ipn-handler.php' );
 
