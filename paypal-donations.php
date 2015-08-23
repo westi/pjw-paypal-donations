@@ -9,17 +9,21 @@ require_once( __DIR__ . '/includes/ipn-handler.php' );
 class pjw_paypal_donation_manager {
 	
 	public function __construct() {
-		$ipn = new pjw_ipn_handler( true );
+		$ipn = new pjw_ipn_handler( true, true );
 		add_action( 'pjw_ipn_verified_for-web_accept', array( $this, 'ipn_received' ) );
 		add_action( 'pjw_ppdm_donation_received', array( $this, 'donation_received' ) );
 		add_action( 'init', array( $this, 'register_donation_post_type' ) );
+	}
+
+	private function debug_log( $thing ) {
+		error_log( __CLASS__ . ':' . print_r( $thing, true ) );
 	}
 
 	public function ipn_received( $_pp_txn_info ) {
 		if ( $_pp_txn_info['payment_status'] === 'Completed' ) {
 			do_action( 'pjw_ppdm_donation_received', $_pp_txn_info );
 		}
-		error_log( print_r( $_pp_txn_info, true ) );
+		$this->debug_log( $_pp_txn_info );
 	}
 
 	public function donation_received( $_pp_txn_info ) {
@@ -30,7 +34,7 @@ class pjw_paypal_donation_manager {
 			'last_name' => $_pp_txn_info['last_name'],
 			'txn_id' => $_pp_txn_info['txn_id'],
 		);
-		error_log( print_r( $_donor_info, true ) );
+		$this->debug_log( $_donor_info );
 		$_post = wp_insert_post( array (
 				'post_type' => 'donation'
 			)
