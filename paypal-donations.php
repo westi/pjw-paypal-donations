@@ -25,13 +25,23 @@ class pjw_paypal_donation_manager {
 		}
 	}
 
+	/**
+	 * Handle a verfied IPN notification
+	 */
 	public function ipn_received( $_pp_txn_info ) {
 		if ( $_pp_txn_info['payment_status'] === 'Completed' ) {
 			do_action( 'pjw_ppdm_donation_received', $_pp_txn_info );
+		} else {
+			// @todo What should we do about uncompleted transactions, should we record them with a different status?
 		}
 		$this->debug_log( $_pp_txn_info );
 	}
 
+	/**
+	 * Process and incoming donation and record meta-data about it.
+	 *
+	 * @todo - We can receive multiple events for the same donation and we need to handle that.
+	 */
 	public function donation_received( $_pp_txn_info ) {
 		$_donor_info = array(
 			'amount' => $_pp_txn_info['mc_gross'],
@@ -53,6 +63,11 @@ class pjw_paypal_donation_manager {
 		}
 	}
 
+	/**
+	 * Register a new post type that we can use to record infomation about donations
+	 *
+	 * @todo I guess we should namespace this name.
+	 */
 	public function register_donation_post_type( ) {
 		register_post_type(
 			'donation',
