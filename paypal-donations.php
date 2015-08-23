@@ -9,6 +9,14 @@ Author: Peter Westwood
 
 require_once( __DIR__ . '/includes/ipn-handler.php' );
 
+/**
+ * Overaching plugin class to handle processing donations and quering for them.
+ *
+ * @todo We need a good wp-admin ui for the custom post-type
+ * @todo We need a way to query the donations to get an idea of how much had been donated
+ * @todo We need a way to build custom paypal donation buttons so we can have control over how much is donated - fixed minimum amount but no upper limit
+ * @todo We need to support donation campaigns in the most simple way
+ */
 class pjw_paypal_donation_manager {
 	private $debug = false;
 	
