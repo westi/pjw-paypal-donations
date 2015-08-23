@@ -7,6 +7,7 @@ Version: 0.1
 require_once( __DIR__ . '/includes/ipn-handler.php' );
 
 class pjw_paypal_donation_manager {
+	private $debug = false;
 	
 	public function __construct() {
 		$ipn = new pjw_ipn_handler( true, true );
@@ -16,7 +17,9 @@ class pjw_paypal_donation_manager {
 	}
 
 	private function debug_log( $thing ) {
-		error_log( __CLASS__ . ':' . print_r( $thing, true ) );
+		if ( $this->debug ) {
+			error_log( __CLASS__ . ':' . print_r( $thing, true ) );
+		}
 	}
 
 	public function ipn_received( $_pp_txn_info ) {
