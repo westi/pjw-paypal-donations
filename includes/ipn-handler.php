@@ -13,7 +13,9 @@ class pjw_ipn_handler {
 	}
 
 	private function debug_log( $thing ) {
-		error_log( __CLASS__ . ':' . print_r( $thing, true ) );
+		if ( $this->debug ) {
+			error_log( __CLASS__ . ':' . print_r( $thing, true ) );
+		}
 	}
 
 	public function filter_query_vars( $_query_vars ) {
