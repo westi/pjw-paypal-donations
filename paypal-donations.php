@@ -18,7 +18,7 @@ require_once( __DIR__ . '/includes/ipn-handler.php' );
  * @todo We need to support donation campaigns in the most simple way
  */
 class pjw_paypal_donation_manager {
-	private $debug = false;
+	private $debug = true;
 	
 	public function __construct() {
 		$ipn = new pjw_ipn_handler( true, true );
