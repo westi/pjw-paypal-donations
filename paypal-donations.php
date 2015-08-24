@@ -51,6 +51,7 @@ class pjw_paypal_donation_manager {
 	 * @todo - We can receive multiple events for the same donation and we need to handle that.
 	 */
 	public function donation_received( $_pp_txn_info ) {
+
 		$_donor_info = array(
 			'pjw_ppdm-amount' => $_pp_txn_info['mc_gross'],
 			'pjw_ppdm-email' => $_pp_txn_info['payer_email'],
@@ -60,14 +61,36 @@ class pjw_paypal_donation_manager {
 			'pjw_ppdm-campaign' => $_pp_txn_info['item_number'],
 		);
 		$this->debug_log( $_donor_info );
-		$_post = wp_insert_post( array (
-				'post_type' => 'pjw-donation'
+
+		$_existing = get_posts(
+			array(
+				'numberposts' => 1,
+				'post_type' => 'pjw-donation',
+				'meta_key' => 'pjw_ppdm-txn_id',
+				'meta_value' => $_donor_info['pjw_ppdm-txn_id']
 			)
 		);
 
-		if ( $_post ) {
+		if ( ! empty( $_existing ) ) {
+			$this->debug_log( $_existing );
+			$this->debug_log( "Found existing donation {$_existing[0]->['id']} for {$_donor_info['pjw_ppdm-txn_id']} updating metadata." );
+
 			foreach( $_donor_info as $_key => $_value ) {
-				add_post_meta( $_post, $_key, $_value, true );
+				update_post_meta( $_existing[0]->['id'], $_key, $_value );
+			}
+
+		} else {
+	
+			$_post = wp_insert_post( array (
+					'post_type' => 'pjw-donation',
+					'post_status' => 'publish'
+				)
+			);
+	
+			if ( $_post ) {
+				foreach( $_donor_info as $_key => $_value ) {
+					add_post_meta( $_post, $_key, $_value, true );
+				}
 			}
 		}
 	}
