@@ -74,17 +74,18 @@ class pjw_paypal_donation_manager {
 	/**
 	 * Register a new post type that we can use to record infomation about donations
 	 *
-	 * @todo I guess we should namespace this name.
 	 */
 	public function register_donation_post_type( ) {
 		register_post_type(
-			'donation',
+			'pjw-donation',
 			array(
 				'label' => 'Donations',
 				'public' => true,
 				'publicly_queryable' => false,
 				'exclude_from_search' => true,
-				'supports' => array( 'title', 'custom-fields' )
+				'supports' => array( 'title', 'custom-fields' ),
+				'capabilities' => array( 'create_posts' => false ),
+				'map_meta_cap' => true,
 			)
 		);
 	}
