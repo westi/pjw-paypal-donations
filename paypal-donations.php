@@ -73,10 +73,10 @@ class pjw_paypal_donation_manager {
 
 		if ( ! empty( $_existing ) ) {
 			$this->debug_log( $_existing );
-			$this->debug_log( "Found existing donation {$_existing[0]->['id']} for {$_donor_info['pjw_ppdm-txn_id']} updating metadata." );
+			$this->debug_log( "Found existing donation {$_existing[0]->ID} for {$_donor_info['pjw_ppdm-txn_id']} updating metadata." );
 
 			foreach( $_donor_info as $_key => $_value ) {
-				update_post_meta( $_existing[0]->['id'], $_key, $_value );
+				update_post_meta( $_existing[0]->ID, $_key, $_value );
 			}
 
 		} else {
