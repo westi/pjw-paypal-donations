@@ -75,6 +75,12 @@ class pjw_paypal_donation_manager {
 			$this->debug_log( $_existing );
 			$this->debug_log( "Found existing donation {$_existing[0]->ID} for {$_donor_info['pjw_ppdm-txn_id']} updating metadata." );
 
+			wp_update_post( array(
+					'ID' => $_existing[0]->ID,
+					'post_title' => "Donation from {$_donor_info['pjw_ppdm-first_name']} {$_donor_info['pjw_ppdm-last_name']} for {$_donor_info['pjw_ppdm-campaign']}"
+				)
+			);
+
 			foreach( $_donor_info as $_key => $_value ) {
 				update_post_meta( $_existing[0]->ID, $_key, $_value );
 			}
@@ -83,7 +89,8 @@ class pjw_paypal_donation_manager {
 	
 			$_post = wp_insert_post( array (
 					'post_type' => 'pjw-donation',
-					'post_status' => 'publish'
+					'post_status' => 'publish',
+					'post_title' => "Donation from {$_donor_info['pjw_ppdm-first_name']} {$_donor_info['pjw_ppdm-last_name']} for {$_donor_info['pjw_ppdm-campaign']}"
 				)
 			);
 	
