@@ -52,15 +52,16 @@ class pjw_paypal_donation_manager {
 	 */
 	public function donation_received( $_pp_txn_info ) {
 		$_donor_info = array(
-			'amount' => $_pp_txn_info['mc_gross'],
-			'email' => $_pp_txn_info['payer_email'],
-			'first_name' => $_pp_txn_info['first_name'],
-			'last_name' => $_pp_txn_info['last_name'],
-			'txn_id' => $_pp_txn_info['txn_id'],
+			'pjw_ppdm-amount' => $_pp_txn_info['mc_gross'],
+			'pjw_ppdm-email' => $_pp_txn_info['payer_email'],
+			'pjw_ppdm-first_name' => $_pp_txn_info['first_name'],
+			'pjw_ppdm-last_name' => $_pp_txn_info['last_name'],
+			'pjw_ppdm-txn_id' => $_pp_txn_info['txn_id'],
+			'pjw_ppdm-campaign' => $_pp_txn_info['item_number'],
 		);
 		$this->debug_log( $_donor_info );
 		$_post = wp_insert_post( array (
-				'post_type' => 'donation'
+				'post_type' => 'pjw-donation'
 			)
 		);
 
