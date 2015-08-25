@@ -28,6 +28,7 @@ class pjw_paypal_donation_manager {
 		add_action( 'manage_pjw-donation_posts_custom_column', array( $this, 'display_custom_post_type_columns' ), 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'custom_post_type_sorting' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'add_campaign_filter' ) );
+		add_action( 'pre_get_posts', array( $this, 'custom_post_type_filtering' ) );
 	}
 
 	private function debug_log( $thing ) {
@@ -167,13 +168,16 @@ class pjw_paypal_donation_manager {
 			return;
 		}
 
-		$_orderby = $_query->get( 'orderby');
-		switch( $_orderby ) {
-			case 'pjw_ppdm-campaign':
-			case 'pjw_ppdm-txn_id':
-			case 'pjw_ppdm-email':
-				$_query->set('meta_key', $_orderby );
-				$_query->set('orderby', 'meta_value' );
+		$_screen = get_current_screen();
+		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
+			$_orderby = $_query->get( 'orderby');
+			switch( $_orderby ) {
+				case 'pjw_ppdm-campaign':
+				case 'pjw_ppdm-txn_id':
+				case 'pjw_ppdm-email':
+					$_query->set('meta_key', $_orderby );
+					$_query->set('orderby', 'meta_value' );
+			}
 		}
 	}
 
@@ -202,6 +206,20 @@ class pjw_paypal_donation_manager {
 				?>
 			</select>
 			<?php
+		}
+	}
+
+	public function custom_post_type_filtering( $_query ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$_screen = get_current_screen();
+		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
+			if ( isset( $_GET['pjw_ppdm-campaign'] ) ) {
+				$_query->set('meta_key','pjw_ppdm-campaign' );
+				$_query->set('meta_value', $_GET['pjw_ppdm-campaign'] );
+			}
 		}
 	}
 
