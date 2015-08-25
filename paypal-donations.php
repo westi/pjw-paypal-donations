@@ -14,7 +14,6 @@ require_once( __DIR__ . '/includes/ipn-handler.php' );
  *
  * @todo We need a good wp-admin ui for the custom post-type
  * @todo We need a way to build custom paypal donation buttons so we can have control over how much is donated - fixed minimum amount but no upper limit
- * @todo We probably need to merge the two pre_get_posts filters so that we can sort and filter at the same time sucessfully - needs to have multiple meta queries.
  */
 class pjw_paypal_donation_manager {
 	private $debug = true;
@@ -27,9 +26,8 @@ class pjw_paypal_donation_manager {
 		add_filter( 'manage_pjw-donation_posts_columns', array( $this, 'register_custom_post_type_columns' ) );
 		add_filter( 'manage_edit-pjw-donation_sortable_columns', array( $this, 'register_custom_post_type_sortable_columns' ) );
 		add_action( 'manage_pjw-donation_posts_custom_column', array( $this, 'display_custom_post_type_columns' ), 10, 2 );
-		add_action( 'pre_get_posts', array( $this, 'custom_post_type_sorting' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'add_campaign_filter' ) );
-		add_action( 'pre_get_posts', array( $this, 'custom_post_type_filtering' ) );
+		add_action( 'pre_get_posts', array( $this, 'custom_post_type_sorting_and_filtering' ) );
 	}
 
 	private function debug_log( $thing ) {
@@ -162,27 +160,6 @@ class pjw_paypal_donation_manager {
 	}
 
 	/**
-	 * Convert our custom order by arguments into meta query ordering for the wp-admin edit view..
-	 */
-	public function custom_post_type_sorting( $_query ) {
-		if ( ! is_admin() ) {
-			return;
-		}
-
-		$_screen = get_current_screen();
-		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
-			$_orderby = $_query->get( 'orderby');
-			switch( $_orderby ) {
-				case 'pjw_ppdm-campaign':
-				case 'pjw_ppdm-txn_id':
-				case 'pjw_ppdm-email':
-					$_query->set('meta_key', $_orderby );
-					$_query->set('orderby', 'meta_value' );
-			}
-		}
-	}
-
-	/**
 	 * Add a filter UI for Campaigns.
 	 *
 	 * @access public
@@ -210,16 +187,37 @@ class pjw_paypal_donation_manager {
 		}
 	}
 
-	public function custom_post_type_filtering( $_query ) {
+	/**
+	 * Convert our custom order by arguments into meta query ordering/sorting for the wp-admin edit view..
+	 */
+	public function custom_post_type_sorting_and_filtering( $_query ) {
 		if ( ! is_admin() ) {
 			return;
 		}
 
 		$_screen = get_current_screen();
 		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
-			if ( isset( $_GET['pjw_ppdm-campaign'] ) ) {
-				$_query->set('meta_key','pjw_ppdm-campaign' );
-				$_query->set('meta_value', $_GET['pjw_ppdm-campaign'] );
+			$_meta_query = array();
+			if ( isset( $_GET['pjw_ppdm-campaign'] ) && ! empty( $_GET['pjw_ppdm-campaign'] ) ) {
+				$_meta_query['relation'] = 'AND';
+				$_meta_query['pjw_ppdm_filter_clause'] = array (
+					'key' => 'pjw_ppdm-campaign',
+					'value' => $_GET['pjw_ppdm-campaign']
+				);
+			}
+			$_orderby = $_query->get( 'orderby');
+			switch( $_orderby ) {
+				case 'pjw_ppdm-campaign':
+				case 'pjw_ppdm-txn_id':
+				case 'pjw_ppdm-email':
+					$_meta_query['pjw_ppdm_order_clause'] = array (
+						'key' => $_orderby,
+						'compare' => 'EXISTS'
+					);
+					$_query->set('orderby', 'pjw_ppdm_order_clause' );
+			}
+			if ( ! empty( $_meta_query ) ) {
+				$_query->set('meta_query', $_meta_query );
 			}
 		}
 	}
