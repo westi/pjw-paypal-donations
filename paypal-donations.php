@@ -14,6 +14,7 @@ require_once( __DIR__ . '/includes/ipn-handler.php' );
  *
  * @todo We need a good wp-admin ui for the custom post-type
  * @todo We need a way to build custom paypal donation buttons so we can have control over how much is donated - fixed minimum amount but no upper limit
+ * @todo We probably need to merge the two pre_get_posts filters so that we can sort and filter at the same time sucessfully - needs to have multiple meta queries.
  */
 class pjw_paypal_donation_manager {
 	private $debug = true;
