@@ -24,7 +24,9 @@ class pjw_paypal_donation_manager {
 		add_action( 'pjw_ppdm_donation_received', array( $this, 'donation_received' ) );
 		add_action( 'init', array( $this, 'register_donation_post_type' ) );
 		add_filter( 'manage_pjw-donation_posts_columns', array( $this, 'register_custom_post_type_columns' ) );
+		add_filter( 'manage_edit-pjw-donation_sortable_columns', array( $this, 'register_custom_post_type_sortable_columns' ) );
 		add_action( 'manage_pjw-donation_posts_custom_column', array( $this, 'display_custom_post_type_columns' ), 10, 2 );
+		add_action( 'pre_get_posts', array( $this, 'custom_post_type_sorting' ) );
 	}
 
 	private function debug_log( $thing ) {
@@ -135,6 +137,13 @@ class pjw_paypal_donation_manager {
 		return $_columns;
 	}
 
+	public function register_custom_post_type_sortable_columns( $_columns ) {
+		$_columns['pjw_ppdm-campaign'] = 'pjw_ppdm-campaign';
+		$_columns['pjw_ppdm-txn_id'] = 'pjw_ppdm-txn_id';
+		$_columns['pjw_ppdm-email'] = 'pjw_ppdm-email';
+		return $_columns;
+	}
+
 	/**
 	 * Output the content for the custom columns in wp-admin
 	 */
@@ -146,6 +155,24 @@ class pjw_paypal_donation_manager {
 			case 'pjw_ppdm-amount':
 				echo get_post_meta( $_post_id, $_column_name, true );
 				break;
+		}
+	}
+
+	/**
+	 * Convert our custom order by arguments into meta query ordering for the wp-admin edit view..
+	 */
+	public function custom_post_type_sorting( $_query ) {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$_orderby = $_query->get( 'orderby');
+		switch( $_orderby ) {
+			case 'pjw_ppdm-campaign':
+			case 'pjw_ppdm-txn_id':
+			case 'pjw_ppdm-email':
+				$_query->set('meta_key', $_orderby );
+				$_query->set('orderby', 'meta_value' );
 		}
 	}
 
