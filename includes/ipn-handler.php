@@ -7,6 +7,7 @@
  * @see https://developer.paypal.com/webapps/developer/docs/classic/products/instant-payment-notification/
  */
 class pjw_ipn_handler {
+	private $version = 0.1;
 	private $sandbox;
 	private $debug;
 
@@ -14,6 +15,7 @@ class pjw_ipn_handler {
 		add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
 		add_action( 'parse_request', array( $this, 'action_parse_request' ) );
 		add_action( 'init', array( $this, 'action_init' ) );
+		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
 		$this->sandbox = $sandbox;
 		$this->debug = $debug;
 	}
@@ -31,8 +33,13 @@ class pjw_ipn_handler {
 
 	public function action_init() {
 		add_rewrite_rule( '^paypal/ipn-handler$', 'index.php?_pjw_ipn_handler=1', 'top' );
-		// @TODO ... CAN WE AVOID THIS
-		flush_rewrite_rules();
+	}
+
+	public function action_admin_init() {
+		if ( get_option( __CLASS__ . '-version' ) != $this->version ) {
+			flush_rewrite_rules();
+			update_option( __CLASS__ . '-version', $this->version );
+		}
 	}
 
 	public function action_parse_request() {
