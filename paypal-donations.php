@@ -27,6 +27,7 @@ class pjw_paypal_donation_manager {
 		add_filter( 'manage_edit-pjw-donation_sortable_columns', array( $this, 'register_custom_post_type_sortable_columns' ) );
 		add_action( 'manage_pjw-donation_posts_custom_column', array( $this, 'display_custom_post_type_columns' ), 10, 2 );
 		add_action( 'pre_get_posts', array( $this, 'custom_post_type_sorting' ) );
+		add_action( 'restrict_manage_posts', array( $this, 'add_campaign_filter' ) );
 	}
 
 	private function debug_log( $thing ) {
@@ -173,6 +174,34 @@ class pjw_paypal_donation_manager {
 			case 'pjw_ppdm-email':
 				$_query->set('meta_key', $_orderby );
 				$_query->set('orderby', 'meta_value' );
+		}
+	}
+
+	/**
+	 * Add a filter UI for Campaigns.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function add_campaign_filter() {
+		global $wpdb;
+		$_screen = get_current_screen();
+		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
+			$_selected_pjw_ppdm_campaign = isset( $_GET['pjw_ppdm-campaign'] ) ? $_GET['pjw_ppdm-campaign']  : '';
+			$_pjw_ppdm_campaigns = $wpdb->get_col( "SELECT DISTINCT(meta_value) FROM {$wpdb->postmeta} WHERE meta_key='pjw_ppdm-campaign';" )
+			?>
+			<label for="filter-by-pjw_ppdm-campaign" class="screen-reader-text">Filter by Campaign</label>
+			<select name="pjw_ppdm-campaign" id="filter-by-pjw_ppdm-campaign">
+				<option <?php selected( $_selected_pjw_ppdm_campaign, ''); ?> value="" >All Campaigns</option>
+				<?php
+					foreach( $_pjw_ppdm_campaigns as $_pjw_ppdm_campaign ) {
+						?>
+							<option <?php selected( $_selected_pjw_ppdm_campaign, $_pjw_ppdm_campaign); ?> value="<?php echo esc_attr( $_pjw_ppdm_campaign ); ?>" ><?php echo esc_html( $_pjw_ppdm_campaign ); ?></option>
+						<?php
+					}
+				?>
+			</select>
+			<?php
 		}
 	}
 
