@@ -1,0 +1,48 @@
+/*
+Theme Name: Twenty Fifteen (Donate)
+Author: Peter Westwood
+Description: A child theme of 2015 with donation page templates
+Version: 0.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Template: twentyfifteen
+*/
+
+@import url("http://magicmoments.ftwr.co.uk/wp-content/themes/twentyfifteen/style.css");
+
+#brick-wall-frame {
+  width: 500px;
+  height: 500px;
+  font-size:0;
+  margin: auto;
+  position: relative;
+}
+
+.brick {
+  width: 34px;
+  height: 12px;
+  background-color: #F08;
+  display: inline-block;
+  margin: 0px;
+  border: thin solid black;
+  position:relative;
+  top: 3px;
+  left: -3px;
+}
+
+.brick.alt {
+  left: 13px;
+}
+
+.brick.donated {
+  border: 1px transparent solid;
+  background-color: transparent;
+}
+
+img#hidden-behind-the-wall {
+  border: 10px solid grey;
+  position:absolute;
+  left: 50%;
+  margin-left:-250px;
+/*  margin-top: -10px; */
+}
