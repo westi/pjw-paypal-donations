@@ -253,6 +253,10 @@ class pjw_paypal_donation_manager {
 
 // Boot strap the plugin.
 function pjw_paypal_donate_bootstrap() {
+	global $pjw_pdm;
 	$pjw_pdm = new pjw_paypal_donation_manager();
 }
 pjw_paypal_donate_bootstrap();
+
+// Register our custom theme folder too.
+register_theme_directory( plugin_dir_path(__FILE__) . '/example-child-themes' );
