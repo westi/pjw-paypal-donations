@@ -8,6 +8,7 @@ Author: Peter Westwood
 */
 
 require_once( __DIR__ . '/includes/ipn-handler.php' );
+require_once( __DIR__ . '/includes/campaign-widget.php' );
 
 /**
  * Overaching plugin class to handle processing donations and quering for them.
