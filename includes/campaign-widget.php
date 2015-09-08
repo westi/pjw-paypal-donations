@@ -8,11 +8,11 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
-		global $pjw_pdm;
+		global $pjw_pdm, $wp_query;
 
 		$title = $instance['title'];
 
-		$campaign = empty( $instance['campaign'] ) ? '' : $instance['campaign'];
+		$campaign = get_post_meta( $wp_query->get_queried_object_id(), 'pjw_ppdm-campaign' , true );
 
 		if ( ! empty( $campaign ) ) {
 			echo $args['before_widget'];
@@ -33,11 +33,6 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 
 		$instance = $old_instance;
 		$instance['title'] = strip_tags($new_instance['title']);
-		if ( in_array( $new_instance['campaign'], $pjw_pdm->get_available_campaigns() ) ) {
-			$instance['campaign'] = $new_instance['campaign'];
-		} else {
-			$instance['campaign'] = '';
-		}
 
 		return $instance;
 	}
@@ -45,7 +40,7 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 	function form( $instance ) {
 		global $pjw_pdm;
 		//Defaults
-		$instance = wp_parse_args( (array) $instance, array( 'campaign' => '', 'title' => '') );
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '') );
 
 		$title = esc_attr( $instance['title'] );
 		?>
@@ -54,17 +49,6 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 				<?php _e('Title:'); ?>
 			</label>
 			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id('campaign'); ?>"><?php _e( 'Campaign:' ); ?></label>
-			<select name="<?php echo $this->get_field_name('campaign'); ?>" id="<?php echo $this->get_field_id('campaign'); ?>" class="widefat">
-				<?php foreach( $pjw_pdm->get_available_campaigns() as $_pjw_ppdm_campaign ) {
-					?>
-					<option <?php selected( $instance['campaign'], $_pjw_ppdm_campaign); ?> value="<?php echo esc_attr( $_pjw_ppdm_campaign ); ?>" ><?php echo esc_html( $_pjw_ppdm_campaign ); ?></option>
-					<?php
-				}
-				?>
-			</select>
 		</p>
 		<?php
 	}
