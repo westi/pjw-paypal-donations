@@ -170,7 +170,7 @@ class pjw_paypal_donation_manager {
 		$_screen = get_current_screen();
 		if ( ( $_screen->post_type == 'pjw-donation' ) && ( $_screen->base == 'edit' ) ) {
 			$_selected_pjw_ppdm_campaign = isset( $_GET['pjw_ppdm-campaign'] ) ? $_GET['pjw_ppdm-campaign']  : '';
-			$_pjw_ppdm_campaigns = $wpdb->get_col( "SELECT DISTINCT(meta_value) FROM {$wpdb->postmeta} WHERE meta_key='pjw_ppdm-campaign';" )
+			$_pjw_ppdm_campaigns = $this->get_available_campaigns();
 			?>
 			<label for="filter-by-pjw_ppdm-campaign" class="screen-reader-text">Filter by Campaign</label>
 			<select name="pjw_ppdm-campaign" id="filter-by-pjw_ppdm-campaign">
@@ -247,6 +247,12 @@ class pjw_paypal_donation_manager {
 		$this->debug_log( "Found \${$_total} donations for {$_campaign}." );
 
 		return $_total;
+	}
+
+	public function get_available_campaigns() {
+		global $wpdb;
+
+		return $wpdb->get_col( "SELECT DISTINCT(meta_value) FROM {$wpdb->postmeta} WHERE meta_key='pjw_ppdm-campaign';" );
 	}
 }
 
