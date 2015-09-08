@@ -8,6 +8,8 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
+		global $pjw_pdm;
+
 		$title = $instance['title'];
 
 		$campaign = empty( $instance['campaign'] ) ? '' : $instance['campaign'];
@@ -19,7 +21,7 @@ class pjw_paypal_donation_campaign_widget extends WP_Widget {
 			}
 		?>
 		<ul>
-			<?php echo $campaign; ?>
+			The '<?php echo $campaign; ?>' has raised $<?php echo $pjw_pdm->get_total_donations( $campaign ); ?> so far.
 		</ul>
 		<?php
 			echo $args['after_widget'];
