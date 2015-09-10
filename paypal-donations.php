@@ -130,7 +130,10 @@ class pjw_paypal_donation_manager {
 	 * @return array
 	 */
 	public function register_custom_post_type_columns( $_columns ) {
+		unset( $_columns['title'] );
 		unset( $_columns['date'] ); // Remove the default date position so we can rename and add at the end.
+		$_columns['pjw_ppdm-first_name'] = 'First Name';
+		$_columns['pjw_ppdm-last_name'] = 'Last Name';
 		$_columns['pjw_ppdm-campaign'] = 'Campaign';
 		$_columns['pjw_ppdm-txn_id'] = 'Transaction ID';
 		$_columns['pjw_ppdm-email'] = 'Donor Email';
@@ -140,6 +143,8 @@ class pjw_paypal_donation_manager {
 	}
 
 	public function register_custom_post_type_sortable_columns( $_columns ) {
+		$_columns['pjw_ppdm-first_name'] ='pjw_ppdm-first_name';
+		$_columns['pjw_ppdm-last_name'] ='pjw_ppdm-last_name';
 		$_columns['pjw_ppdm-campaign'] = 'pjw_ppdm-campaign';
 		$_columns['pjw_ppdm-txn_id'] = 'pjw_ppdm-txn_id';
 		$_columns['pjw_ppdm-email'] = 'pjw_ppdm-email';
@@ -151,6 +156,8 @@ class pjw_paypal_donation_manager {
 	 */
 	public function display_custom_post_type_columns( $_column_name, $_post_id ) {
 		switch( $_column_name ) {
+			case 'pjw_ppdm-first_name':
+			case 'pjw_ppdm-last_name':
 			case 'pjw_ppdm-campaign':
 			case 'pjw_ppdm-txn_id':
 			case 'pjw_ppdm-email':
@@ -208,6 +215,8 @@ class pjw_paypal_donation_manager {
 			}
 			$_orderby = $_query->get( 'orderby');
 			switch( $_orderby ) {
+				case 'pjw_ppdm-first_name':
+				case 'pjw_ppdm-last_name':
 				case 'pjw_ppdm-campaign':
 				case 'pjw_ppdm-txn_id':
 				case 'pjw_ppdm-email':
