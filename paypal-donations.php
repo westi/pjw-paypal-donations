@@ -130,7 +130,7 @@ class pjw_paypal_donation_manager {
 	 * @return array
 	 */
 	public function register_custom_post_type_columns( $_columns ) {
-		unset( $_columns['title'] );
+		unset( $_columns['title'] ); // We don't want the title displayed
 		unset( $_columns['date'] ); // Remove the default date position so we can rename and add at the end.
 		$_columns['pjw_ppdm-first_name'] = 'First Name';
 		$_columns['pjw_ppdm-last_name'] = 'Last Name';
@@ -138,7 +138,7 @@ class pjw_paypal_donation_manager {
 		$_columns['pjw_ppdm-txn_id'] = 'Transaction ID';
 		$_columns['pjw_ppdm-email'] = 'Donor Email';
 		$_columns['pjw_ppdm-amount'] = 'Amount';
-		$_columns['date'] = 'Donation Date';
+		$_columns['pjw_ppdm-date'] = 'Donation Date';
 		return $_columns;
 	}
 
@@ -163,6 +163,20 @@ class pjw_paypal_donation_manager {
 			case 'pjw_ppdm-email':
 			case 'pjw_ppdm-amount':
 				echo get_post_meta( $_post_id, $_column_name, true );
+				break;
+			case 'pjw_ppdm-date':
+				$t_time = get_the_time( __( 'Y/m/d g:i:s a' ) );
+				$m_time = get_post( $_post_id )->post_date;
+				$time = get_post_time( 'G', true, $_post_id );
+
+				$time_diff = time() - $time;
+
+				if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+					$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
+				} else {
+					$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
+				}
+				echo '<abbr title="' . $t_time . '">' . $h_time . '</abbr>';
 				break;
 		}
 	}
