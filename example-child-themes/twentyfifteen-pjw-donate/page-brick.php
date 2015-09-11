@@ -35,6 +35,18 @@ get_header(); ?>
 								if ( isset( $_donated[ $_pos ] ) ) {
 									$_brick_class .= ' donated';
 								}
+								$_colour = mt_rand( 1, 3 );
+								switch( $_colour ) {
+									case 1:
+										$_brick_class .= ' red';
+										break;
+									case 2:
+										$_brick_class .= ' blue';
+										break;
+									case 3:
+										$_brick_class .= ' yellow';
+										break;
+								}
 								?><span class='<?php echo esc_attr( $_brick_class ); ?>'></span><?php
 							}
 						}

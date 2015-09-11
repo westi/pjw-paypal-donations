@@ -21,7 +21,6 @@ Template: twentyfifteen
 .brick {
   width: 34px;
   height: 12px;
-  background-color: #F08;
   display: inline-block;
   margin: 0px;
   border: thin solid black;
@@ -32,6 +31,18 @@ Template: twentyfifteen
 
 .brick.alt {
   left: 13px;
+}
+
+.brick.red {
+	background-color: #901412;
+}
+
+.brick.yellow {
+	background-color: #F7BE00;
+}
+
+.brick.blue {
+	background-color: #074582;
 }
 
 .brick.donated {
