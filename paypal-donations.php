@@ -20,7 +20,7 @@ class pjw_paypal_donation_manager {
 	private $debug = true;
 	
 	public function __construct() {
-		$ipn = new pjw_ipn_handler( true, true );
+		$ipn = new pjw_ipn_handler( false, false );
 		add_action( 'pjw_ipn_verified_for-web_accept', array( $this, 'ipn_received' ) );
 		add_action( 'pjw_ppdm_donation_received', array( $this, 'donation_received' ) );
 		add_action( 'init', array( $this, 'register_donation_post_type' ) );
