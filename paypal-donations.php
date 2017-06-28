@@ -213,7 +213,7 @@ class pjw_paypal_donation_manager {
 	 * Convert our custom order by arguments into meta query ordering/sorting for the wp-admin edit view..
 	 */
 	public function custom_post_type_sorting_and_filtering( $_query ) {
-		if ( ! is_admin() ) {
+		if ( ! is_admin() || is_customize_preview() ) {
 			return;
 		}
 
