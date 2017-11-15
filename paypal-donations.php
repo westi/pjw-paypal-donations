@@ -117,7 +117,7 @@ class pjw_paypal_donation_manager {
 				'publicly_queryable' => false,
 				'exclude_from_search' => true,
 				'supports' => array( 'title', 'custom-fields' ),
-				'capabilities' => array( 'create_posts' => false ),
+				'capabilities' => array( 'create_posts' => 'do_not_allow' ),
 				'map_meta_cap' => true,
 			)
 		);
